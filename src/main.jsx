@@ -7,10 +7,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </React.StrictMode>,
 )
-```
-
----
-
-**FILE 5 — `src/App.jsx`**
-```
-Paste the full Mia habit tracker code from earlier in our chat here
