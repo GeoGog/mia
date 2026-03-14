@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import Auth from "./Auth";
+import Settings from "./Settings";
 
 // ─── QUOTES ───────────────────────────────────────────────────────────────────
 const QUOTES = [
@@ -23,40 +24,45 @@ const QUOTES = [
 
 // ─── MORNING ROUTINE ──────────────────────────────────────────────────────────
 const MORNING_TASKS = [
-  { id: "m1",  icon: "😊", name: "Smile",              desc: "Before getting out of bed, smile for 10 seconds. Trigger joy before the day begins." },
-  { id: "m2",  icon: "🤲", name: "Scalp Massage",      desc: "30-second scalp massage to wake up the nervous system and stimulate circulation." },
-  { id: "m3",  icon: "🪥", name: "Brush Teeth",        desc: "Brush with intention. No phone. Just presence." },
-  { id: "m4",  icon: "✨", name: "Skincare",           desc: "A simple, consistent skincare routine — cleanse, moisturise, SPF." },
-  { id: "m5",  icon: "🪞", name: "Mirror Affirmations",desc: "Look into the mirror and say self-loving affirmations out loud. At least 3." },
-  { id: "m6",  icon: "💧", name: "Warm Water",         desc: "Drink 2 glasses of warm water sitting in Malasana to hydrate and activate digestion." },
-  { id: "m7",  icon: "🌬️", name: "Pranayama",          desc: "3 minutes of conscious breathwork — alternate nostril, box breathing, or deep belly breath." },
-  { id: "m8",  icon: "🧘", name: "Meditation",         desc: "5 minutes of silent, guided, or mantra-based meditation." },
-  { id: "m9",  icon: "📖", name: "Read 1 Page",        desc: "Read one page of any book of your choice. Build the reading habit gently." },
-  { id: "m10", icon: "🎯", name: "Set Intention",      desc: "Write or say one intention for the day." },
-  { id: "m11", icon: "🙏", name: "Gratitude",          desc: "Name 3 things you are grateful for." },
-  { id: "m12", icon: "🌿", name: "Movement",           desc: "30 seconds of any movement — stretch, shake, dance, jump." },
-  { id: "m13", icon: "☀️", name: "Sunlight",           desc: "Step outside or near a window. Get natural light on your face for 30 seconds." },
-  { id: "m14", icon: "🥗", name: "Nourish Preview",    desc: "Mentally review what you will eat today. Set yourself up to nourish well." },
-  { id: "m15", icon: "💬", name: "Declare Your Day",   desc: "Say out loud: 'Today I choose to show up for myself.'" },
+  { id: "m1",  icon: "🙏", name: "5 Thank You",           desc: "Before opening your eyes, with eyes still closed, say 5 thank yous from your heart. Begin the day in gratitude." },
+  { id: "m2",  icon: "💆", name: "Head Massage & Tie Hair",desc: "Give yourself a gentle head massage to wake up your scalp and energy. Then tie your hair up to start the day fresh." },
+  { id: "m3",  icon: "🛏️", name: "Make Your Bed",         desc: "Make your bed the moment you get up. This one small act of order sets the tone for the entire day." },
+  { id: "m4",  icon: "🫙", name: "Oil Pulling",            desc: "Swish 1 tablespoon of sesame or coconut oil in your mouth for 1 minute. Spit it out. Ancient Ayurvedic oral detox." },
+  { id: "m5",  icon: "🪥", name: "Brush",                  desc: "Brush your teeth with full presence. No phone, no rushing. Just you and this moment." },
+  { id: "m6",  icon: "🦷", name: "Floss",                  desc: "Floss gently between every tooth. A habit that protects your whole body, not just your mouth." },
+  { id: "m7",  icon: "💧", name: "Gargle",                 desc: "Gargle with warm salt water or plain water. Clears the throat, supports immunity." },
+  { id: "m8",  icon: "🧖", name: "Face Wash",              desc: "Wash your face gently with clean water. Wake up your skin. Look at yourself with love." },
+  { id: "m9",  icon: "👂", name: "Ear Massage",            desc: "Massage both ears gently — lobes, rims, and inner folds. Stimulates over 200 acupressure points connected to the whole body." },
+  { id: "m10", icon: "🫀", name: "Lymph Drain",            desc: "Gentle lymphatic drainage strokes — neck, underarms, chest. Supports detox and immune flow. 30 seconds each side." },
+  { id: "m11", icon: "🗣️", name: "UUU AAA OOO Stretches", desc: "Open your mouth wide and sound out UUU, AAA, OOO with full body stretches. Releases jaw tension and wakes the vagus nerve." },
+  { id: "m12", icon: "🙆", name: "Neck Massage",           desc: "Roll and massage your neck — side to side, gentle circles. Release the night's tension before the day begins." },
+  { id: "m13", icon: "👗", name: "Change Your Outfit",     desc: "Get dressed intentionally. Changing out of sleepwear signals to your body and mind: the day has begun." },
+  { id: "m14", icon: "💧", name: "2 Glasses of Water",     desc: "Drink 2 glasses of warm or room temperature water. Hydrate before anything else enters your body." },
+  { id: "m15", icon: "🧘", name: "Yoga / Stretches",       desc: "5 minutes of gentle yoga or full body stretches. Move your body, wake your energy, greet the day." },
+  { id: "m16", icon: "📓", name: "Journal — Read To Do",   desc: "Open your journal. Read yesterday's to-do list. Set your intention and priorities for today." },
+  { id: "m17", icon: "🪔", name: "Lamp Divine",            desc: "Light a lamp or candle. Sit for a moment in its presence. Connect to something greater than yourself." },
+  { id: "m18", icon: "✨", name: "One Quote",              desc: "Read or recall one meaningful quote to carry with you through the day. Let it be your anchor." },
 ];
 
 // ─── NIGHT ROUTINE ─────────────────────────────────────────────────────────────
 const NIGHT_TASKS = [
-  { id: "n1",  icon: "🍽️", name: "Menu Planning",      desc: "Write out tomorrow's meals or food intentions." },
-  { id: "n2",  icon: "📝", name: "To-Do List",         desc: "Write 3–5 priorities for tomorrow. Clear the mental clutter." },
-  { id: "n3",  icon: "🌰", name: "Soak the Nuts",      desc: "Soak almonds, walnuts, or seeds overnight for tomorrow morning." },
-  { id: "n4",  icon: "🌙", name: "Night Skincare",     desc: "Evening cleanse, serum, night cream. A ritual of self-care." },
-  { id: "n5",  icon: "📓", name: "Gratitude Journal",  desc: "Write 3 things that went well today." },
-  { id: "n6",  icon: "🌟", name: "Reflect",            desc: "One sentence: what did I do today that I am proud of?" },
-  { id: "n7",  icon: "📵", name: "Digital Sunset",     desc: "Put the phone away. No screens for the final 10 minutes." },
-  { id: "n8",  icon: "🍵", name: "Herbal Tea",         desc: "Sip something warm and calming." },
-  { id: "n9",  icon: "📖", name: "Read 1 Page",        desc: "Continue your book. End the day with imagination, not a screen." },
-  { id: "n10", icon: "🌬️", name: "Breathing",          desc: "3 minutes of slow, deep breathing to calm the nervous system." },
-  { id: "n11", icon: "🧘", name: "Body Scan",          desc: "1-minute mental scan from head to toe. Notice and release tension." },
-  { id: "n12", icon: "💗", name: "Affirmations",       desc: "3 loving affirmations before sleep." },
-  { id: "n13", icon: "🕊️", name: "Forgiveness",        desc: "Release anything from the day. Let it go." },
-  { id: "n14", icon: "🌛", name: "Sleep Intention",    desc: "Choose how you want to wake up feeling tomorrow." },
-  { id: "n15", icon: "😊", name: "Smile",              desc: "End the day the same way it began. Smile." },
+  { id: "n1",  icon: "💧", name: "Warm Water",             desc: "One hour after dinner, drink 2 glasses of warm water. Aids digestion and begins your evening reset." },
+  { id: "n2",  icon: "🦶", name: "Foot Soak & Oil",        desc: "Soak your feet in warm water, clean them, then oil and massage each foot. Grounds your energy and prepares you for deep sleep." },
+  { id: "n3",  icon: "🌿", name: "Anal & Navel Oiling",    desc: "Apply warm sesame or coconut oil to the navel and anal area. Ancient Ayurvedic practice to nourish the nervous system overnight." },
+  { id: "n4",  icon: "🪥", name: "Brush",                  desc: "Brush your teeth before bed. The last act of care for your body before rest." },
+  { id: "n5",  icon: "🦷", name: "Floss",                  desc: "Floss gently. What you remove at night protects you while you sleep." },
+  { id: "n6",  icon: "💧", name: "Gargle",                 desc: "Gargle with warm water or salt water. Clear the throat before silence." },
+  { id: "n7",  icon: "🧖", name: "Face Wash",              desc: "Wash your face. Remove the day. Start the night fresh and clean." },
+  { id: "n8",  icon: "👂", name: "Ear Massage",            desc: "Gently massage both ears. Calms the nervous system and tells your body it is safe to rest." },
+  { id: "n9",  icon: "🫀", name: "Lymph Drain",            desc: "Gentle lymphatic strokes on neck, chest, and underarms. Support your body's overnight detox process." },
+  { id: "n10", icon: "🗣️", name: "UUU AAA OOO Stretches", desc: "Release any tension stored in the jaw and throat with UUU, AAA, OOO sounds and full body stretches." },
+  { id: "n11", icon: "🙆", name: "Neck Massage",           desc: "Slow, gentle neck massage. Release the weight of the day. Let your shoulders drop." },
+  { id: "n12", icon: "🍽️", name: "Kitchen Cleaning",       desc: "Leave the kitchen clean before you sleep. A clean kitchen in the morning changes how the whole day begins." },
+  { id: "n13", icon: "📋", name: "Menu Planning",          desc: "Write out tomorrow's meals. Knowing what you will eat removes morning decision fatigue entirely." },
+  { id: "n14", icon: "🌰", name: "Prep Work",              desc: "Soak nuts, seeds, or grains. Set ingredients and tools in place. Your morning self will thank you." },
+  { id: "n15", icon: "📝", name: "To Do Task List",        desc: "Write 3–5 clear priorities for tomorrow. Empty your mind onto paper so your sleep is peaceful and clear." },
+  { id: "n16", icon: "💆", name: "Head Massage & Untie Hair", desc: "Give yourself a loving head massage. Untie your hair. Release everything — the day, the roles, the doing." },
+  { id: "n17", icon: "🙏", name: "5 Thank You",            desc: "After closing your eyes, say 5 thank yous from the heart. End exactly as you began — in gratitude. ✦" },
 ];
 
 const ALL_TASKS = [...MORNING_TASKS, ...NIGHT_TASKS];
@@ -162,6 +168,8 @@ export default function App() {
   const [dataId, setDataId] = useState(null);
   const [userLevel, setUserLevel] = useState(1);
   const [expandedTask, setExpandedTask] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => load("mia_dark", false));
 
   const today = todayStr();
   const last7 = getLast7();
@@ -180,6 +188,7 @@ export default function App() {
   }, []);
 
   useEffect(() => { if (session) loadUserData(); }, [session]);
+  useEffect(() => { try { localStorage.setItem("mia_dark", JSON.stringify(darkMode)); } catch {} }, [darkMode]);
 
   const loadUserData = async () => {
     const { data } = await supabase.from("habits").select("*").eq("user_id", session.user.id).single();
@@ -266,6 +275,27 @@ export default function App() {
 
   if (!session) return <Auth />;
 
+  // Stats for settings page
+  const settingsStats = {
+    level: userLevel,
+    bestStreak: Math.max(...ALL_TASKS.map(t => taskStreak(t.id)), 0),
+    totalDays: (() => {
+      const days = new Set();
+      Object.keys(logs).forEach(k => { const d = k.split("||")[1]; if (d) days.add(d); });
+      return days.size;
+    })(),
+  };
+
+  if (showSettings) return (
+    <Settings
+      session={session}
+      onClose={() => setShowSettings(false)}
+      darkMode={darkMode}
+      setDarkMode={setDarkMode}
+      stats={settingsStats}
+    />
+  );
+
   // ── TAB BAR ──
   const TabBar = () => (
     <div style={{
@@ -295,7 +325,7 @@ export default function App() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#fff8fb 0%,#fdf0f7 50%,#f8f0fd 100%)", maxWidth: 430, margin: "0 auto", paddingBottom: 90 }}>
+    <div style={{ minHeight: "100vh", background: darkMode ? "linear-gradient(160deg,#1a0f14,#140a18,#0f0f1a)" : "linear-gradient(160deg,#fff8fb 0%,#fdf0f7 50%,#f8f0fd 100%)", maxWidth: 430, margin: "0 auto", paddingBottom: 90 }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -313,7 +343,7 @@ export default function App() {
           <div style={{ background: "linear-gradient(160deg,#fde8f0 0%,#f8e8fd 100%)", padding: "48px 24px 28px", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: -50, right: -50, width: 200, height: 200, background: "rgba(249,184,202,0.2)", borderRadius: "50%" }} />
             <div style={{ position: "absolute", bottom: -40, left: -40, width: 140, height: 140, background: "rgba(200,164,200,0.15)", borderRadius: "50%" }} />
-            <button onClick={signOut} style={{ position: "absolute", top: 16, right: 20, background: "rgba(255,255,255,0.6)", border: "1px solid rgba(249,184,202,0.4)", borderRadius: 20, padding: "5px 12px", ...f, fontSize: 10, color: "#b8809a", cursor: "pointer" }}>Sign out</button>
+            <button onClick={() => setShowSettings(true)} style={{ position: "absolute", top: 16, right: 20, background: "rgba(255,255,255,0.6)", border: "1px solid rgba(249,184,202,0.4)", borderRadius: "50%", width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 17 }}>⚙️</button>
             {saving && <p style={{ position: "absolute", top: 18, left: 20, ...f, fontSize: 9, color: "#e8a0b8" }}>saving...</p>}
             <div style={{ position: "relative" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
@@ -364,7 +394,7 @@ export default function App() {
             <SectionTitle>☀️ Morning Routine</SectionTitle>
             <div style={{ background: "white", border: "1px solid #fce8f0", borderRadius: 20, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <p style={{ ...f, fontSize: 12, color: "#5a3040" }}>{morningDoneToday} of 15 complete</p>
+                <p style={{ ...f, fontSize: 12, color: "#5a3040" }}>{morningDoneToday} of 18 complete</p>
                 <Ring pct={morningPct} size={36} stroke={3} color="#f9b8ca" />
               </div>
               <div style={{ height: 5, background: "#fce8f0", borderRadius: 10, overflow: "hidden" }}>
@@ -377,7 +407,7 @@ export default function App() {
             <SectionTitle>🌙 Night Routine</SectionTitle>
             <div style={{ background: "white", border: "1px solid #fce8f0", borderRadius: 20, padding: "14px 16px", marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <p style={{ ...f, fontSize: 12, color: "#5a3040" }}>{nightDoneToday} of 15 complete</p>
+                <p style={{ ...f, fontSize: 12, color: "#5a3040" }}>{nightDoneToday} of 17 complete</p>
                 <Ring pct={nightPct} size={36} stroke={3} color="#c8a4c8" />
               </div>
               <div style={{ height: 5, background: "#f0e8f8", borderRadius: 10, overflow: "hidden" }}>
@@ -448,7 +478,7 @@ export default function App() {
                 <h2 style={{ ...serif, fontSize: 26, fontStyle: "italic", fontWeight: 300, color: "#3d2535" }}>Morning Routine</h2>
                 <Ring pct={morningPct} size={44} stroke={3} color="#f9b8ca" />
               </div>
-              <p style={{ ...f, fontSize: 11, color: "#c8a0b8", marginBottom: 18 }}>Your first 15 minutes · {morningDoneToday} of 15 done</p>
+              <p style={{ ...f, fontSize: 11, color: "#c8a0b8", marginBottom: 18 }}>Your first 18 minutes · {morningDoneToday} of 18 done</p>
               {MORNING_TASKS.map((task, i) => (
                 <TaskRow key={task.id} task={task} i={i} date={today} logs={logs} onToggle={toggle} />
               ))}
@@ -461,7 +491,7 @@ export default function App() {
                 <h2 style={{ ...serif, fontSize: 26, fontStyle: "italic", fontWeight: 300, color: "#3d2535" }}>Night Routine</h2>
                 <Ring pct={nightPct} size={44} stroke={3} color="#c8a4c8" />
               </div>
-              <p style={{ ...f, fontSize: 11, color: "#c8a0b8", marginBottom: 18 }}>Your last 15 minutes · {nightDoneToday} of 15 done</p>
+              <p style={{ ...f, fontSize: 11, color: "#c8a0b8", marginBottom: 18 }}>Your last 17 minutes · {nightDoneToday} of 17 done</p>
               {NIGHT_TASKS.map((task, i) => (
                 <TaskRow key={task.id} task={task} i={i + 15} date={today} logs={logs} onToggle={toggle} />
               ))}
